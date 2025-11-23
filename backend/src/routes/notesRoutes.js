@@ -1,6 +1,7 @@
 import express from "express";
 import {
   createAllNotes,
+  getNoteById,
   deleteNote,
   getAllNotes,
   updateNote,
@@ -9,8 +10,9 @@ import {
 const router = express.Router();
 
 router.get("/", getAllNotes);
+router.get("/:id", getNoteById);
 router.post("/", createAllNotes);
 router.put("/:id", updateNote);
-router.delete(":id", deleteNote);
+router.delete("/:id", deleteNote);
 
 export default router;
