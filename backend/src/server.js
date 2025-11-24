@@ -1,20 +1,29 @@
-import express from "express"
-import notesRoutes from "./routes/notesRoutes.js"
-import { connectDB } from "./config/db.js"
-import dotenv from "dotenv"
-dotenv.config()
+import express from "express";
+import notesRoutes from "./routes/notesRoutes.js";
+import { connectDB } from "./config/db.js";
+import dotenv from "dotenv";
+import rateLimiter from "./middleware/rateLimiter.js";
+dotenv.config();
 
-const app = express()
-const PORT = process.env.PORT || 5001
-
-connectDB()
+const app = express();
+const PORT = process.env.PORT || 5001;
 
 //middleware
-app.use(express.json())
+app.use(express.json()); // Parses the json body : allow access to req.body
 
+// The ratelimit middleware using redis
+app.use(rateLimiter);
 
-app.use("/api/notes",notesRoutes)
+// custom example middle ware
+app.use((req, res, next) => {
+  console.log(`Req method is ${req.method} && Req URL is ${req.url}`);
+  next();
+});
 
-app.listen(PORT,()=>{
-    console.log(`Server started on ${PORT}`)
-})
+app.use("/api/notes", notesRoutes);
+
+connectDB().then(() => {
+  app.listen(PORT, () => {
+    console.log(`Server started on http://localhost:${PORT}`);
+  });
+});
