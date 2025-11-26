@@ -8,7 +8,7 @@ const ratelimit= new Ratelimit({
     redis:Redis.fromEnv(),
     
     // Sets the ratelimit for the requests here 10 requests per 10 sec
-    limiter:Ratelimit.slidingWindow(10,"10 s")
+    limiter:Ratelimit.slidingWindow(100,"10 s")
 
 })
 
